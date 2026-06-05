@@ -42,14 +42,14 @@
 .formchild{
     margin-bottom: 32px;
 }
-label{
+.label{
     display: block;
     font-size: 14px;
     margin-bottom: 8px;
     color: var(--cml-dark);
 }
 
-input{
+.input{
     width: 100%;
     padding: 12px 16px;
     border-radius: 8px;
@@ -58,7 +58,7 @@ input{
     outline: none;
     transition: border-color 0.2s;
 }
-button{
+.button{
     width: 100%;
     margin-top: 12px;
 }

@@ -1,5 +1,7 @@
 import {useState,useEffect} from "react";
-import {fetchUsers} from './services/api';
+import {fetchUsers} from '../../services/api';
+import styles from "./dashboard.module.css"
+
 
 export default function Dashboard(){
     const [users,setUsers]=useState([]);
@@ -22,37 +24,38 @@ export default function Dashboard(){
         load();
 
     },[]);
-    // search by name or email
+    // search by name or email or company
     const searchedUser=users.filter(user=>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        user.name.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase()) ||
+        user.company.name.toLowerCase.includes(search.toLowerCase())
     );
     return (
-        <div className="container">
-            <div className="header">
-                <h1 className="title">Employee Directory</h1>
+        <div className={styles.container}>
+            <div className={styles.header}>
+                <h1 className={styles.title}>Employee Directory</h1>
 
-                <input type="text" placeholder="Search here..." className="search" value={search} onChange={(e)=>setSearch(e.target.value)}/> 
+                <input type="text" className={styles.input} placeholder="Search here..." value={search} onChange={(e)=>setSearch(e.target.value)}/> 
             </div>
 
             {loading &&(
-                <div className="statecont">
+                <div className={styles.state}>
                     <h2>Syncing data...</h2>
                 </div>
             )}
             {err &&(
-                <div className="statecont">
-                    <h2 className="error">{err}</h2>
+                <div className={styles.state}>
+                    <h2 className={styles.error}>{err}</h2>
                     <button className="btn-primary" style={{marginTop:'16px'}} onClick={()=>window.location.reload()}>Retry</button>
                 </div>
             )}
             {!loading && !err &&(
-                <div className="grid">
+                <div className={styles.grid}>
                     {searchedUser.length>0?(searchedUser.map(user=>(
-                        <div className="card" key={user.id}>
-                            <h3 className="cardname">{user.name}</h3>
-                            <p className="cardemail">{user.email}</p>
-                            <div className="comp">{user.company.name}</div>
+                        <div className={styles.card} key={user.id}>
+                            <h3 className={styles.cardname}>{user.name}</h3>
+                            <p className={styles.cardmail}>{user.email}</p>
+                            <div className={styles.comp}>{user.company.name}</div>
 
                         </div>
                     )
