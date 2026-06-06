@@ -8,27 +8,40 @@ export default function Dashboard(){
     const [loading,setLoading]=useState(true);
     const [search,setSearch]=useState('');
     const [err,setErr]=useState(null);
+    const [status,setStatus]=useState('Syncing');
     useEffect(()=>{
+        let t1,t2;
         const load=async()=>{
+
             try{
                 setLoading(true);
                 const data=await fetchUsers();
+                t1=setTimeout(() => {
+                    setStatus('Loading');
+                }, 1000);
+                t2=setTimeout(() => {
+                    setUsers(data);
+                    setLoading(false);
+                }, 2000);
                 setUsers(data);
+                    
             }catch(err){
                 setErr('Unable to load data.');
                 console.error(err);
-            }finally{
                 setLoading(false);
             }
         };
         load();
-
+        return ()=>{
+            clearTimeout(t1);
+            clearTimeout(t2);
+        }
     },[]);
     // search by name or email or company
     const searchedUser=users.filter(user=>
         user.name.toLowerCase().includes(search.toLowerCase()) ||
         user.email.toLowerCase().includes(search.toLowerCase()) ||
-        user.company.name.toLowerCase.includes(search.toLowerCase())
+        user.company.name.toLowerCase().includes(search.toLowerCase())
     );
     return (
         <div className={styles.container}>
@@ -40,7 +53,8 @@ export default function Dashboard(){
 
             {loading &&(
                 <div className={styles.state}>
-                    <h2>Syncing data...</h2>
+                    <h2>{status} data...</h2>
+                    
                 </div>
             )}
             {err &&(
@@ -61,7 +75,9 @@ export default function Dashboard(){
                     )
                 )
             ):(
-                <div className="statecont"></div>
+                <div className={styles.state} style={{gridColumn:'1 / -1'}}>
+                    <p>No employees matching {search}</p>   
+                </div>
             )}
                 </div>
             )}

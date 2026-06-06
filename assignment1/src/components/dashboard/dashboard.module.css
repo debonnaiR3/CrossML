@@ -27,7 +27,7 @@
 .state{
     text-align: center;
     padding: 60px;
-    counter-reset: var(--cml-grey);
+    color: var(--cml-grey);
 }
 .state .error{
     color: var(--cml-red);
