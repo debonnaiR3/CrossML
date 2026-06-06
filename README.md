@@ -1,0 +1,13 @@
+<h3>A React-based portal allowing CrossML team members to search and view directory information for agents across various partner companies.</h3>
+
+<h2>Setup:</h2>
+
+
+Run this set of commands in order->
+
+git clone https://github.com/debonnaiR3/CrossML.git
+cd CrossML
+cd assignment1
+npm install
+
+npm run dev
