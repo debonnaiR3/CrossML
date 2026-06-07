@@ -1,16 +1,17 @@
 import styles from './login.module.css'
+import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 
 export default function Login(){
     const navigate=useNavigate();
-
+    const [name,setName]=useState("");
     function handleLogin(e){
         e.preventDefault();
         let auth=true;
         if(auth){
 
-            navigate('/dashboard');
+            navigate(`/dashboard/${name}`);
         }
     };
     return (
@@ -26,10 +27,10 @@ export default function Login(){
                 <form onSubmit={handleLogin}>
                 <div className={styles.formchild}>
                         <label className={styles.label}>Email</label>
-                        <input type="email" className={styles.input} placeholder="name@crossml.com" required/>
+                        <input type="email" className={styles.input} placeholder="name@crossml.com" required onChange={(e)=>setName(e.target.value.split("@")[0])}/>
 
                     </div>
-                    <div className="formchild">
+                    <div className={styles.formchild}>
                         <label className={styles.label}>Password</label>
                         <input type="password" className={styles.input} placeholder="****" required />
                     </div>
