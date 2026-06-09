@@ -27,7 +27,7 @@
 .state{
     text-align: center;
     padding: 60px;
-    color: var(--cml-grey);
+    color: var(--cml-gray);
 }
 .state .error{
     color: var(--cml-red);
@@ -54,7 +54,7 @@
 }
 .card .cardmail{
     font-size: 14px;
-    color: var(--cml-grey);
+    color: var(--cml-gray);
     margin-bottom: 16px;
 }
 .card .comp{

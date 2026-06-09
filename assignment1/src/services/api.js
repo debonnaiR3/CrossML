@@ -1,6 +1,6 @@
-// src/services/api.js
 
-const API_URL = 'https://jsonplaceholder.typicode.com/users';
+
+const API_URL = import.meta.env.VITE_EXT_API;
 
 export const fetchUsers = async () => {
   try {

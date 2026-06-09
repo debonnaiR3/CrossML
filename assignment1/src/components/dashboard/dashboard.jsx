@@ -12,7 +12,7 @@ export default function Dashboard(){
     useEffect(()=>{
         let t1,t2;
         const load=async()=>{
-
+            // t1 and t2 timers are just for design 
             try{
                 setLoading(true);
                 const data=await fetchUsers();
@@ -23,7 +23,7 @@ export default function Dashboard(){
                     setUsers(data);
                     setLoading(false);
                 }, 2000);
-                setUsers(data);
+                
                     
             }catch(err){
                 setErr('Unable to load data.');
