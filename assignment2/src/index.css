@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+ 
+  --cml-red: #ea4335; 
+  --cml-dark: #1f2937; 
+  --cml-gray: #6b7280; 
+  --cml-light-bg: #f9fafb; 
+  --cml-border: #e5e7eb;
+  
+ 
+  --radius-pill: 50px;
+  --radius-card: 12px;
+  --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--cml-light-bg);
+  color: var(--cml-dark);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn-primary {
+  background-color: var(--cml-dark);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #000000;
+  transform: translateY(-1px);
+}
