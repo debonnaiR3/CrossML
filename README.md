@@ -7,7 +7,7 @@ Run this set of commands in order->
 
 git clone https://github.com/debonnaiR3/CrossML.git<br>
 cd CrossML<br>
-cd assignment1<br>
+cd assignment[No.]<br>
 npm install<br>
 
 npm run dev
