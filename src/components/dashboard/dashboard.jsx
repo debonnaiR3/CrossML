@@ -15,9 +15,11 @@ export default function Dashboard() {
     const [err, setErr] = useState(null);
     const [status, setStatus] = useState('Syncing');
     
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const employeesPerPage = 6; 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const [employeeToEdit, setEmployeeToEdit] = useState(null);
 
     useEffect(() => {
@@ -40,11 +42,15 @@ export default function Dashboard() {
         return () => { clearTimeout(t1); clearTimeout(t2); }
     }, []);
 
+   
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search]);
+
     function handleLogout() {
         logout();
         navigate('/login');
     }
-
     
     const openAddModal = () => {
         setEmployeeToEdit(null); 
@@ -59,16 +65,12 @@ export default function Dashboard() {
     const handleSaveEmployee = async (employeeData) => {
         try {
             if (employeeToEdit) {
-            
                 const updatedEmployee = await updateEmployee(employeeToEdit.id, employeeData);
-
                 setUsers(prevUsers => prevUsers.map(u => u.id === employeeToEdit.id ? updatedEmployee : u));
             } else {
-         
                 const savedEmployee = await addEmployee(employeeData);
                 setUsers(prevUsers => [savedEmployee, ...prevUsers]);
             }
-      
             setIsModalOpen(false);
             setEmployeeToEdit(null);
         } catch (error) {
@@ -87,11 +89,18 @@ export default function Dashboard() {
         }
     };
 
+   
     const searchedUser = users.filter(user =>
         user.name?.toLowerCase().includes(search.toLowerCase()) ||
         user.email?.toLowerCase().includes(search.toLowerCase()) ||
         user.company?.name?.toLowerCase().includes(search.toLowerCase())
     );
+
+   
+    const indexOfLastEmployee = currentPage * employeesPerPage;
+    const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+    const currentEmployees = searchedUser.slice(indexOfFirstEmployee, indexOfLastEmployee);
+    const totalPages = Math.ceil(searchedUser.length / employeesPerPage);
 
     return (
         <div className={styles.container}>
@@ -102,7 +111,6 @@ export default function Dashboard() {
                         type="text" className={styles.input} placeholder="Search here..." 
                         value={search} onChange={(e) => setSearch(e.target.value)}
                     /> 
-         
                     <button onClick={openAddModal} className="btn-primary">
                         + Add Employee
                     </button>
@@ -116,37 +124,60 @@ export default function Dashboard() {
             {err && <div className={styles.state}><h2 className={styles.error}>{err}</h2><button className="btn-primary" style={{ marginTop: '16px' }} onClick={() => window.location.reload()}>Retry</button></div>}
             
             {!loading && !err && (
-                <div className={styles.grid}>
-                    {searchedUser.length > 0 ? (
-                        searchedUser.map(user => (
-                            <div className={styles.card} key={user.id}>
-                      
-                                <div className={styles.cardActions}>
-                                    <button 
-                                        className={`${styles.actionBtn} ${styles.editBtn}`}
-                                        onClick={() => openEditModal(user)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button 
-                                        className={`${styles.actionBtn} ${styles.deleteBtn}`}
-                                        onClick={() => handleDeleteEmployee(user.id, user.name)}
-                                    >
-                                        Delete
-                                    </button>
+                <>
+                    <div className={styles.grid}>
+                        {currentEmployees.length > 0 ? (
+                            currentEmployees.map(user => (
+                                <div className={styles.card} key={user.id}>
+                                    <div className={styles.cardActions}>
+                                        <button 
+                                            className={`${styles.actionBtn} ${styles.editBtn}`}
+                                            onClick={() => openEditModal(user)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button 
+                                            className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                                            onClick={() => handleDeleteEmployee(user.id, user.name)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                    <h3 className={styles.cardname}>{user.name}</h3>
+                                    <p className={styles.cardmail}>{user.email}</p>
+                                    <div className={styles.comp}>{user.company?.name || 'N/A'}</div>
                                 </div>
-                                
-                                <h3 className={styles.cardname}>{user.name}</h3>
-                                <p className={styles.cardmail}>{user.email}</p>
-                                <div className={styles.comp}>{user.company?.name || 'N/A'}</div>
+                            ))
+                        ) : (
+                            <div className={styles.state} style={{ gridColumn: '1 / -1' }}>
+                                <p>No employees matching "{search}"</p>   
                             </div>
-                        ))
-                    ) : (
-                        <div className={styles.state} style={{ gridColumn: '1 / -1' }}>
-                            <p>No employees matching "{search}"</p>   
+                        )}
+                    </div>
+
+                    
+                    {totalPages > 1 && (
+                        <div className={styles.pagination}>
+                            <button 
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+                                disabled={currentPage === 1}
+                                className={styles.pageBtn}
+                            >
+                                Previous
+                            </button>
+                            <span className={styles.pageInfo}>
+                                Page {currentPage} of {totalPages}
+                            </span>
+                            <button 
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+                                disabled={currentPage === totalPages}
+                                className={styles.pageBtn}
+                            >
+                                Next
+                            </button>
                         </div>
                     )}
-                </div>
+                </>
             )}
 
             <EmployeeModal 

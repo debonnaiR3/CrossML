@@ -127,3 +127,43 @@
     color: var(--cml-red); 
     background-color: #fee2e2; 
 }
+
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--cml-border);
+}
+
+.pageBtn {
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid var(--cml-border);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cml-dark);
+    transition: all 0.2s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+    background-color: var(--cml-light-bg);
+    border-color: var(--cml-gray);
+}
+
+.pageBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pageInfo {
+    font-size: 14px;
+    color: var(--cml-gray);
+    font-weight: 500;
+}
