@@ -11,3 +11,4 @@ cd assignment[No.]<br>
 npm install<br>
 
 npm run dev
+s

@@ -8,13 +8,19 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 32px;
-
 }
 .title{
     font-size: 28px;
     font-weight: 700;
     color: var(--cml-dark);
 }
+
+.headerControls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
 .input{
     padding: 10px 16px;
     width: 300px;
@@ -24,6 +30,17 @@
     outline: none;
     transition: border-color 0.2s;
 }
+
+
+.logoutBtn {
+    background-color: var(--cml-red);
+    padding: 10px 20px;
+}
+.logoutBtn:hover {
+    background-color: #cc3a2e;
+    transform: translateY(-1px);
+}
+
 .state{
     text-align: center;
     padding: 60px;
@@ -66,4 +83,47 @@
     font-size: 12px;
     font-weight: 500;
     border: 1px solid var(--cml-border);
+}
+
+.card {
+    background-color: white;
+    padding: 24px;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--cml-border);
+    transition: transform 0.2s ease;
+    position: relative; 
+}
+
+
+
+.cardActions {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+}
+
+.actionBtn {
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.editBtn { color: var(--cml-gray); }
+.editBtn:hover { 
+    color: #2563eb; 
+    background-color: #dbeafe; 
+}
+
+.deleteBtn { color: var(--cml-gray); }
+.deleteBtn:hover { 
+    color: var(--cml-red); 
+    background-color: #fee2e2; 
 }
