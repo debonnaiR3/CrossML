@@ -5,10 +5,8 @@
 
 Run this set of commands in order->
 
-git clone https://github.com/debonnaiR3/CrossML.git<br>
-cd CrossML<br>
-cd assignment[No.]<br>
+git clone https://github.com/debonnaiR3/CrossML.git](https://github.com/debonnaiR3/crossml-agent-directory.git<br>
+cd crossml-agent-directory<br>
 npm install<br>
 
 npm run dev
-s
