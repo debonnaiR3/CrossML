@@ -1,12 +1,16 @@
-<h3>A React-based portal allowing CrossML team members to search and view directory information for agents across various partner companies.</h3>
+# CrossML Agent Directory
 
-<h2>Setup:</h2>
+A modern, responsive React portal designed for CrossML team members to search, browse, manage, and inspect directory dossiers for agents across partner enterprises. 
 
+Built with a strict focus on clean component decoupling, Client-Side Role-Based Access Control (RBAC), and robust local state persistence.
 
-Run this set of commands in order->
+---
 
-git clone https://github.com/debonnaiR3/crossml-agent-directory.git<br>
-cd crossml-agent-directory<br>
-npm install<br>
+##  Local Setup Instructions
 
-npm run dev
+To run this project locally, follow these sequential steps:
+
+### 1. Clone the repository
+```bash
+git clone [https://github.com/debonnaiR3/crossml-agent-directory.git](https://github.com/debonnaiR3/crossml-agent-directory.git)
+cd crossml-agent-directory
