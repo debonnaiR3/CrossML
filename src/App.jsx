@@ -6,6 +6,7 @@ import Register from "./components/login/register"
 import ForgotPassword from "./components/login/forgotPass";
 import { AuthProvider } from "./services/authContext";
 import ProtectedRoute from "./components/protectedRoute";
+import EmployeeDetail from "./components/dashboard/empDetails";
 
 
 export default function App(){
@@ -20,6 +21,7 @@ export default function App(){
         <Route path="/register" element={<Register/>}/>
         <Route path="/forgotPassword" element={<ForgotPassword/>}/>
         <Route path="*" element={<Navigate to="/login" replace/>}/>
+        <Route path="/employee/:id" element={<ProtectedRoute><EmployeeDetail/></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
     

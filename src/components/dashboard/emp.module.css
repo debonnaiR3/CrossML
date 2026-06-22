@@ -94,3 +94,24 @@
 .btnCancel:hover {
     background-color: var(--cml-light-bg);
 }
+
+
+
+.inputError {
+    border-color: var(--cml-red) !important;
+    background-color: #fff5f5;
+}
+
+.errorInline {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--cml-red);
+    margin-top: 6px;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-2px); }
+    to { opacity: 1; transform: translateY(0); }
+}

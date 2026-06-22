@@ -8,20 +8,32 @@ import styles from "./dashboard.module.css";
 export default function Dashboard() {
     const { name } = useParams();
     const navigate = useNavigate();
-    const { logout } = useContext(AuthContext);
+    const { user,logout } = useContext(AuthContext);
+    const isAdmin = user?.role === 'admin';
+    
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [err, setErr] = useState(null);
     const [status, setStatus] = useState('Syncing');
     
-    
+   
     const [currentPage, setCurrentPage] = useState(1);
     const employeesPerPage = 6; 
 
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [employeeToEdit, setEmployeeToEdit] = useState(null);
 
+  
+    const [toast, setToast] = useState({ visible: false, message: '', type: '' });
+
+    const showToast = (message, type = 'error') => {
+        setToast({ visible: true, message, type });
+        setTimeout(() => setToast({ visible: false, message: '', type: '' }), 4000);
+    };
+
+  
     useEffect(() => {
         let t1, t2;
         const load = async () => {
@@ -34,7 +46,7 @@ export default function Dashboard() {
                     setLoading(false);
                 }, 2000);
             } catch (err) {
-                setErr('Unable to load data.');
+                setErr('Unable to load workspace data.');
                 setLoading(false);
             }
         };
@@ -42,7 +54,6 @@ export default function Dashboard() {
         return () => { clearTimeout(t1); clearTimeout(t2); }
     }, []);
 
-   
     useEffect(() => {
         setCurrentPage(1);
     }, [search]);
@@ -61,30 +72,32 @@ export default function Dashboard() {
         setEmployeeToEdit(employee);
         setIsModalOpen(true);
     };
-
-    const handleSaveEmployee = async (employeeData) => {
+const handleSaveEmployee = async (employeeData) => {
         try {
             if (employeeToEdit) {
                 const updatedEmployee = await updateEmployee(employeeToEdit.id, employeeData);
                 setUsers(prevUsers => prevUsers.map(u => u.id === employeeToEdit.id ? updatedEmployee : u));
+                showToast("Agent dossier updated successfully.", "success");
             } else {
                 const savedEmployee = await addEmployee(employeeData);
                 setUsers(prevUsers => [savedEmployee, ...prevUsers]);
+                showToast("New agent registered successfully.", "success");
             }
             setIsModalOpen(false);
             setEmployeeToEdit(null);
         } catch (error) {
-            alert("Failed to save employee.");
+            showToast("Failed to mutate ledger data. Please check your connection."); 
         }
     };
 
     const handleDeleteEmployee = async (id, employeeName) => {
-        if (window.confirm(`Are you sure you want to delete ${employeeName}?`)) {
+        if (window.confirm(`Are you sure you want to revoke gateway access for ${employeeName}?`)) {
             try {
                 await deleteEmployee(id);
                 setUsers(prevUsers => prevUsers.filter(user => user.id !== id));
+                showToast(`Access revoked for ${employeeName}.`, "success");
             } catch (error) {
-                alert("Failed to delete employee.");
+                showToast("Failed to delete agent from ledger."); 
             }
         }
     };
@@ -104,24 +117,55 @@ export default function Dashboard() {
 
     return (
         <div className={styles.container}>
+            {toast.visible && (
+                <div style={{
+                    padding: '12px 20px',
+                    marginBottom: '24px',
+                    borderRadius: 'var(--radius-card)',
+                    backgroundColor: toast.type === 'success' ? '#dcfce7' : '#fee2e2',
+                    color: toast.type === 'success' ? '#166534' : '#991b1b',
+                    border: `1px solid ${toast.type === 'success' ? '#bbf7d0' : '#f87171'}`,
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}>
+                    <span>{toast.message}</span>
+                    <button onClick={() => setToast({ visible: false })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+                </div>
+            )}
             <div className={styles.header}>
-                <h1 className={styles.title}>Welcome, {name || 'User'}!</h1>
+              
+                <h1 className={styles.title}>
+                    Welcome, {name ? decodeURIComponent(name) : 'Agent'}!
+                </h1>
                 <div className={styles.headerControls}>
                     <input 
-                        type="text" className={styles.input} placeholder="Search here..." 
+                        type="text" className={styles.input} placeholder="Search directory..." 
                         value={search} onChange={(e) => setSearch(e.target.value)}
                     /> 
-                    <button onClick={openAddModal} className="btn-primary">
-                        + Add Employee
-                    </button>
+                    {isAdmin && (
+                        <button onClick={openAddModal} className="btn-primary">
+                            + Add Agent
+                        </button>
+                    )}
                     <button onClick={handleLogout} className={`btn-primary ${styles.logoutBtn}`}>
                         Logout
                     </button>
                 </div>
             </div>
 
-            {loading && <div className={styles.state}><h2>{status} data...</h2></div>}
-            {err && <div className={styles.state}><h2 className={styles.error}>{err}</h2><button className="btn-primary" style={{ marginTop: '16px' }} onClick={() => window.location.reload()}>Retry</button></div>}
+            {loading && <div className={styles.state}><h2>{status} secure ledger...</h2></div>}
+            
+            {err && (
+                <div className={styles.state}>
+                    <h2 className={styles.error}>{err}</h2>
+                    <button className="btn-primary" style={{ marginTop: '16px' }} onClick={() => window.location.reload()}>
+                        Retry Connection
+                    </button>
+                </div>
+            )}
             
             {!loading && !err && (
                 <>
@@ -129,33 +173,45 @@ export default function Dashboard() {
                         {currentEmployees.length > 0 ? (
                             currentEmployees.map(user => (
                                 <div className={styles.card} key={user.id}>
+                                    
+                                  
+                                    {isAdmin && (
                                     <div className={styles.cardActions}>
                                         <button 
                                             className={`${styles.actionBtn} ${styles.editBtn}`}
-                                            onClick={() => openEditModal(user)}
+                                            onClick={(e) => { e.stopPropagation(); openEditModal(user); }}
                                         >
                                             Edit
                                         </button>
                                         <button 
                                             className={`${styles.actionBtn} ${styles.deleteBtn}`}
-                                            onClick={() => handleDeleteEmployee(user.id, user.name)}
+                                            onClick={(e) => { e.stopPropagation(); handleDeleteEmployee(user.id, user.name); }}
                                         >
                                             Delete
                                         </button>
                                     </div>
-                                    <h3 className={styles.cardname}>{user.name}</h3>
-                                    <p className={styles.cardmail}>{user.email}</p>
-                                    <div className={styles.comp}>{user.company?.name || 'N/A'}</div>
+                                    )}
+                                    
+                                  
+                                    <div 
+                                        onClick={() => navigate(`/employee/${user.id}`)}
+                                        style={{ cursor: 'pointer', paddingRight: '90px' }} 
+                                    >
+                                        <h3 className={styles.cardname}>{user.name}</h3>
+                                        <p className={styles.cardmail}>{user.email}</p>
+                                        <div className={styles.comp}>{user.company?.name || 'N/A'}</div>
+                                    </div>
+
                                 </div>
                             ))
                         ) : (
                             <div className={styles.state} style={{ gridColumn: '1 / -1' }}>
-                                <p>No employees matching "{search}"</p>   
+                                <p>No records located for query "{search}"</p>   
                             </div>
                         )}
                     </div>
 
-                    
+                  
                     {totalPages > 1 && (
                         <div className={styles.pagination}>
                             <button 

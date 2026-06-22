@@ -72,3 +72,14 @@ export const deleteEmployee = async (id) => {
     localStorage.setItem('cml_employees', JSON.stringify(currentData));
     return id;
 };
+
+export const getEmployeeById = async (id) => {
+    await delay(400); 
+    const currentData = JSON.parse(localStorage.getItem('cml_employees')) || [];
+    
+   
+    const targetEmployee = currentData.find(emp => emp.id.toString() === id.toString());
+    
+    if (!targetEmployee) throw new Error("Agent dossier not found");
+    return targetEmployee;
+};
