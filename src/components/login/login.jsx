@@ -9,23 +9,32 @@ export default function Login() {
     
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [err, setErr] = useState("");
 
     function handleLogin(e) {
         e.preventDefault();
+        setErr(""); 
         
-        if (email && password) {
-            const extractedName = email.split("@")[0];
-            
-      
-            const userData = { 
-                name: extractedName, 
-                email: email,
-                token: "mock-jwt-token-123" 
+        if (!email || !password) return;
+
+        const registeredAccounts = JSON.parse(localStorage.getItem('cml_accounts')) || [];
+
+        
+        const validUser = registeredAccounts.find(
+            user => user.email.toLowerCase() === email.toLowerCase() && user.password === password
+        );
+
+        if (validUser) {
+            const sessionData = { 
+                name: validUser.name, 
+                email: validUser.email,
+                token: "cml-jwt-" + Math.random().toString(36).substring(2) 
             };
             
-           
-            login(userData);
-            navigate(`/dashboard/${extractedName}`);
+            login(sessionData);
+            navigate(`/dashboard/${encodeURIComponent(validUser.name)}`);
+        } else {
+            setErr("Invalid email or password. Please try again.");
         }
     };
 
@@ -59,16 +68,19 @@ export default function Login() {
                         <input 
                             type="password" 
                             className={styles.input} 
-                            placeholder="****" 
+                            placeholder="••••••••" 
                             required 
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
+
+                  
+                    {err && <p style={{ color: 'var(--cml-red)', fontSize: '13px', fontWeight: '500', marginBottom: '12px' }}>{err}</p>}
+
                     <button type="submit" className={`btn-primary ${styles.button}`}>Sign in</button>
                 </form>
 
-               
                 <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '14px' }}>
                     <Link to="/forgotPassword" style={{ color: 'var(--cml-gray)', textDecoration: 'none', display: 'block', marginBottom: '12px' }}>
                         Forgot Password?

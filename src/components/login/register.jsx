@@ -7,15 +7,34 @@ export default function Register() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [err, setErr] = useState("");
 
     function handleRegister(e) {
         e.preventDefault();
+        setErr("");
+
+        if (!name || !email || !password) return;
+
         
-       
-        if (name && email && password) {
-            alert("Account created successfully! Please sign in.");
-            navigate("/login"); 
+        const existingAccounts = JSON.parse(localStorage.getItem('cml_accounts')) || [];
+
+    
+        const isDuplicate = existingAccounts.some(
+            user => user.email.toLowerCase() === email.toLowerCase()
+        );
+
+        if (isDuplicate) {
+            setErr("An account with this email already exists.");
+            return;
         }
+
+     
+        const newUser = { name, email, password };
+        existingAccounts.push(newUser);
+        localStorage.setItem('cml_accounts', JSON.stringify(existingAccounts));
+
+        alert("Account created successfully! You can now sign in.");
+        navigate("/login"); 
     }
 
     return (
@@ -59,13 +78,17 @@ export default function Register() {
                         <input 
                             type="password" 
                             className={styles.input} 
-                            placeholder="****" 
+                            placeholder="••••••••" 
                             required 
-                            minlength="6"
+                            minLength="6"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
+
+                    
+                    {err && <p style={{ color: 'var(--cml-red)', fontSize: '13px', fontWeight: '500', marginBottom: '12px' }}>{err}</p>}
+
                     <button type="submit" className={`btn-primary ${styles.button}`}>Register</button>
                 </form>
 
