@@ -1,9 +1,13 @@
 import styles from './login.module.css'; 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { register } from '../../redux/auth';
 
 export default function Register() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,23 +20,16 @@ export default function Register() {
 
         if (!name || !email || !password) return;
 
-        
         const existingAccounts = JSON.parse(localStorage.getItem('cml_accounts')) || [];
-
-    
-        const isDuplicate = existingAccounts.some(
-            user => user.email.toLowerCase() === email.toLowerCase()
-        );
+        const isDuplicate = existingAccounts.some(user => user.email.toLowerCase() === email.toLowerCase());
 
         if (isDuplicate) {
             setErr("An account with this email already exists.");
             return;
         }
 
-     
         const newUser = { name, email, password, role };
-        existingAccounts.push(newUser);
-        localStorage.setItem('cml_accounts', JSON.stringify(existingAccounts));
+        dispatch(register(newUser));
 
         alert("Account created successfully! You can now sign in.");
         navigate("/login"); 
@@ -54,56 +51,26 @@ export default function Register() {
                 <form onSubmit={handleRegister}>
                     <div className={styles.formchild} style={{ marginBottom: '16px' }}>
                         <label className={styles.label}>Full Name</label>
-                        <input 
-                            type="text" 
-                            className={styles.input} 
-                            placeholder="Ashpreet Singh" 
-                            required 
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
+                        <input type="text" className={styles.input} placeholder="Ashpreet Singh" required value={name} onChange={(e) => setName(e.target.value)} />
                     </div>
                     <div className={styles.formchild} style={{ marginBottom: '16px' }}>
                         <label className={styles.label}>Email</label>
-                        <input 
-                            type="email" 
-                            className={styles.input} 
-                            placeholder="ash@crossml.com" 
-                            required 
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
+                        <input type="email" className={styles.input} placeholder="ash@crossml.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
                     <div className={styles.formchild}>
                         <label className={styles.label}>Password</label>
-                        <input 
-                            type="password" 
-                            className={styles.input} 
-                            placeholder="••••••••" 
-                            required 
-                            minLength="6"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        <input type="password" className={styles.input} placeholder="••••••••" required minLength="6" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
 
-                    
                     {err && <p style={{ color: 'var(--cml-red)', fontSize: '13px', fontWeight: '500', marginBottom: '12px' }}>{err}</p>}
-
 
                     <div className={styles.formchild} style={{ marginBottom: '24px' }}>
                         <label className={styles.label}>Access Role</label>
-                        <select 
-                            className={styles.input} 
-                            value={role} 
-                            onChange={(e) => setRole(e.target.value)}
-                            style={{ backgroundColor: 'white', cursor: 'pointer' }}
-                        >
+                        <select className={styles.input} value={role} onChange={(e) => setRole(e.target.value)} style={{ backgroundColor: 'white', cursor: 'pointer' }}>
                             <option value="viewer">Viewer (Read-Only Directory)</option>
                             <option value="admin">Admin (Full Gateway Access)</option>
                         </select>
                     </div>
-
 
                     <button type="submit" className={`btn-primary ${styles.button}`}>Register</button>
                 </form>

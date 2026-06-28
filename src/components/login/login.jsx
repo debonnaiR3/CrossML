@@ -1,11 +1,12 @@
 import styles from './login.module.css';
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from '../../services/authContext';
+import { useDispatch } from 'react-redux';
+import { login } from '../../redux/auth';
 
 export default function Login() {
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext); 
+    const dispatch = useDispatch();
     
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,9 +18,9 @@ export default function Login() {
         
         if (!email || !password) return;
 
+        // Redux slices handle storage access, but for auth validation scanning we check the ledger safely
         const registeredAccounts = JSON.parse(localStorage.getItem('cml_accounts')) || [];
 
-        
         const validUser = registeredAccounts.find(
             user => user.email.toLowerCase() === email.toLowerCase() && user.password === password
         );
@@ -28,16 +29,16 @@ export default function Login() {
             const sessionData = { 
                 name: validUser.name, 
                 email: validUser.email,
-                role:validUser.role,
+                role: validUser.role,
                 token: "cml-jwt-" + Math.random().toString(36).substring(2) 
             };
             
-            login(sessionData);
+            dispatch(login(sessionData));
             navigate(`/dashboard/${encodeURIComponent(validUser.name)}`);
         } else {
             setErr("Invalid email or password. Please try again.");
         }
-    };
+    }
 
     return (
         <div className={styles.container}>
@@ -56,27 +57,18 @@ export default function Login() {
                     <div className={styles.formchild}>
                         <label className={styles.label}>Email</label>
                         <input 
-                            type="email" 
-                            className={styles.input} 
-                            placeholder="name@crossml.com" 
-                            required 
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type="email" className={styles.input} placeholder="name@crossml.com" 
+                            required value={email} onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div className={styles.formchild}>
                         <label className={styles.label}>Password</label>
                         <input 
-                            type="password" 
-                            className={styles.input} 
-                            placeholder="••••••••" 
-                            required 
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            type="password" className={styles.input} placeholder="••••••••" 
+                            required value={password} onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
 
-                  
                     {err && <p style={{ color: 'var(--cml-red)', fontSize: '13px', fontWeight: '500', marginBottom: '12px' }}>{err}</p>}
 
                     <button type="submit" className={`btn-primary ${styles.button}`}>Sign in</button>
