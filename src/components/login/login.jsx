@@ -28,6 +28,7 @@ export default function Login() {
             const sessionData = { 
                 name: validUser.name, 
                 email: validUser.email,
+                role:validUser.role,
                 token: "cml-jwt-" + Math.random().toString(36).substring(2) 
             };
             

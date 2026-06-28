@@ -8,6 +8,7 @@ export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [err, setErr] = useState("");
+    const [role, setRole] = useState("viewer");
 
     function handleRegister(e) {
         e.preventDefault();
@@ -29,7 +30,7 @@ export default function Register() {
         }
 
      
-        const newUser = { name, email, password };
+        const newUser = { name, email, password, role };
         existingAccounts.push(newUser);
         localStorage.setItem('cml_accounts', JSON.stringify(existingAccounts));
 
@@ -88,6 +89,21 @@ export default function Register() {
 
                     
                     {err && <p style={{ color: 'var(--cml-red)', fontSize: '13px', fontWeight: '500', marginBottom: '12px' }}>{err}</p>}
+
+
+                    <div className={styles.formchild} style={{ marginBottom: '24px' }}>
+                        <label className={styles.label}>Access Role</label>
+                        <select 
+                            className={styles.input} 
+                            value={role} 
+                            onChange={(e) => setRole(e.target.value)}
+                            style={{ backgroundColor: 'white', cursor: 'pointer' }}
+                        >
+                            <option value="viewer">Viewer (Read-Only Directory)</option>
+                            <option value="admin">Admin (Full Gateway Access)</option>
+                        </select>
+                    </div>
+
 
                     <button type="submit" className={`btn-primary ${styles.button}`}>Register</button>
                 </form>

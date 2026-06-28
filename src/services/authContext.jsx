@@ -13,10 +13,15 @@ export const AuthProvider = ({ children }) => {
             setUser(JSON.parse(storedUser));
         }
         
+   
+
         const existingDb = localStorage.getItem('cml_accounts');
         if (!existingDb) {
-            const demoUser = [{ name: "Reviewer Demo", email: "demo@crossml.com", password: "password123" }];
-            localStorage.setItem('cml_accounts', JSON.stringify(demoUser));
+            const demoUsers = [
+                { name: "Ashpreet (Admin)", email: "admin@crossml.com", password: "password123", role: "admin" },
+                { name: "Guest (Viewer)", email: "viewer@crossml.com", password: "password123", role: "viewer" }
+            ];
+            localStorage.setItem('cml_accounts', JSON.stringify(demoUsers));
         }
         setLoading(false);
     }, []);
