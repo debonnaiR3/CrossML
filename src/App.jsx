@@ -1,10 +1,14 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./components/login/login";
-import Dashboard from './components/dashboard/dashboard';
-import Register from "./components/login/register";
-import ForgotPassword from "./components/login/forgotPass";
-import EmployeeDetail from "./components/dashboard/empDetails";
+
+// PAGE IMPORTS
+import Login from "./pages/login/login";
+import Register from "./pages/login/register";
+import ForgotPassword from "./pages/login/forgotPass";
+import Dashboard from './pages/dashboard/dashboard';
+import EmployeeDetail from "./pages/dashboard/empDetails";
+
+// COMPONENT IMPORTS
 import ProtectedRoute from "./components/protectedRoute";
 
 export default function App() {
@@ -13,10 +17,12 @@ export default function App() {
       <Routes>
         <Route path='/' element={<Navigate to='/login' replace/>}/>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/register' element={<Register/>}/>
+        <Route path='/forgotPassword' element={<ForgotPassword/>}/>
+        
         <Route path='/dashboard/:name' element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
         <Route path="/employee/:id" element={<ProtectedRoute><EmployeeDetail/></ProtectedRoute>}/>
-        <Route path="/register" element={<Register/>}/>
-        <Route path="/forgotPassword" element={<ForgotPassword/>}/>
+        
         <Route path="*" element={<Navigate to="/login" replace/>}/>
       </Routes>
     </BrowserRouter>
